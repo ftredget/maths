@@ -1,0 +1,41 @@
+#!/bin/bash
+mathspath="/home/finn/Documents/Work/Uni/Maths"
+ofmodule="${@: -1}"
+of="$mathspath/$ofmodule/$ofmodule.tex"
+
+if [ -f $of ]; then
+	echo "$of already exists!"
+else
+	mkdir -p "$mathspath/$ofmodule"
+	today=$(date --iso-8601)
+	
+	if [ $# -ge 2 ]; then #If there are at least 2 args
+		echo "\documentclass{report}" > $of #It is a report
+	else #If there are less
+		echo "\documentclass{article}" > $of #It is an article
+	fi
+	echo "\usepackage{flatex}" >> $of
+	echo "\title{$ofmodule}" >> $of
+	echo "\author{Finn Tredget}" >> $of
+	echo "\date{$today}" >> $of
+	echo "\begin{document}" >> $of
+	echo "" >> $of
+	echo "\maketitle" >> $of
+	echo "\tableofcontents" >> $of
+	if [ $# -ge 2 ]; then
+		echo "\newpage" >> $of #Newpage only for combination
+	fi
+	echo "" >> $of
+
+	# echo ${@:1:$# - 1}
+	for module in ${@:1:$# - 1}
+	do
+		inf="$mathspath/$module/$module.tex"
+		# echo $inf
+		linecount=$(<$inf wc -l)
+		echo "\chapter{$module}\label{$module}" >> $of
+		head -n $(( $linecount - 1 )) $inf | tail -n $(( $linecount - 12 )) | sed s/\label{/\label{"$module":/g | sed s/\ref{/\ref{"$module":/g >> $of
+	done
+
+	echo "\end{document}" >> $of
+fi
