@@ -2,14 +2,16 @@
 
 maths_path=~/Documents/Work/Uni/Maths
 maths_module=$(/usr/bin/ls -w 1 ~/Documents/Work/Uni/Maths/ | rofi -dmenu)
-maths_op=$(echo -e "1\n2\n3\n4\n5\n6\n7" | rofi -dmenu)
 
-if [ $(( $maths_op & 1)) = 1 ]; then
-	neovide "$maths_path"/"$maths_module"/"$maths_module".tex &
-fi
-if [ $(( $maths_op & 2)) = 2 ]; then
-	zathura "$maths_path"/"$maths_module"/"$maths_module".pdf &
-fi
-if [ $(( $maths_op & 4)) = 4 ]; then
-	zathura "$maths_path"/"$maths_module"/lecturenotes.pdf &
+if [[ ! -z "$maths_module" ]]; then
+	maths_op=$(echo -e "1\n2\n3\n4\n5\n6\n7" | rofi -dmenu)
+	if [ $(( $maths_op & 1)) = 1 ]; then
+		neovide "$maths_path"/"$maths_module"/"$maths_module".tex &
+	fi
+	if [ $(( $maths_op & 2)) = 2 ]; then
+		zathura "$maths_path"/"$maths_module"/"$maths_module".pdf &
+	fi
+	if [ $(( $maths_op & 4)) = 4 ]; then
+		zathura "$maths_path"/"$maths_module"/lecturenotes.pdf &
+	fi
 fi
